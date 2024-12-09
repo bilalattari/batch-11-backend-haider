@@ -1,20 +1,25 @@
 import express from "express";
-
+import userRoutes from './routes/user.js'
 const app = express();
 const PORT = 4000;
+app.use(express.json()); //poori app pe laga he
 
-function middleware(req, res, next) {
-  next();
-}
-
-app.get("/", middleware, (req, res) => {
-  console.log("req.accepted=>");
-  res.send("Seeing to First API!");
+app.get("/", (req, res) => {
+  res.send("hello world");
 });
 
-app.get("/:id", (req, res) => {
-  console.log(req.query);
-  res.send("Product id is" + req.params.id);
-});
+app.use('/user', userRoutes)
 
-app.listen(PORT, () => console.log(`Server is runnong on PORT ${PORT}`));
+
+app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
+
+
+//route=>request=>controllers=>service=>controller=>response
+
+//route banta he request kya lye
+
+//controller , =>req se data lena , data ko validate krna ,
+// =>service , service se jo data return hota he wo
+// => response mein chala jata he
+
+//service   //=> database se saara jo kaam wo service mein krte hen

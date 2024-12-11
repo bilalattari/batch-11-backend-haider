@@ -1,23 +1,23 @@
 import express from "express";
 const router = express.Router()
+import User from "../models/User.js";
 
-const users = [{
-    fullname: "Bilal",
-    id: 1,
-    email: "attari1235@gmail.com"
-}]
-
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const { fullname, email } = req.body
-    users.push({ fullname, email, id: users.length + 1 })
+    let newUser = new User({
+        fullname,
+        email
+    })
+    newUser = await newUser.save()
     res.status(201).json({
         msg: "User added successfully",
         error: false,
-        data: users
+        data: newUser
     })
 })
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+    const users = await User.find()
     res.status(200).json({
         msg: "User fetched successfully",
         error: false,
@@ -25,24 +25,35 @@ router.get('/', (req, res) => {
     })
 })
 
-router.get('/:id', (req, res) => {
-    const user = users.find((data) => data.id == req.params.id)
-    if (!user) return res.status(404).json({
-        error: true,
-        msg: "User not found",
-        data: null
-    })
+router.get('/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+        // const user = await User.findOne({_id : req.params.id})
+        if (!user) return res.status(404).json({
+            error: true,
+            msg: "User not found",
+            data: null
+        })
 
-    res.status(200).json({
-        msg: "User found successfully",
-        error: false,
-        data: user
-    })
+        res.status(200).json({
+            msg: "User found successfully",
+            error: false,
+            data: user
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            error: true,
+            msg: "Something went wrong",
+            data: null
+        })
+    }
+
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
     const { fullname, email } = req.body
-    const user = users.find((data) => data.id == req.params.id)
+    const user = await User.findById(req.params.id)
     if (!user) return res.status(404).json({
         error: true,
         msg: "User not found",
@@ -51,8 +62,10 @@ router.put('/:id', (req, res) => {
     if (fullname) user.fullname = fullname
     if (email) user.email = email
 
+    await user.save()
+
     res.status(200).json({
-        msg: "User found successfully",
+        msg: "User updated successfully",
         error: false,
         data: user
     })

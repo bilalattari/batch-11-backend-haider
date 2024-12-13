@@ -1,13 +1,15 @@
 import express from "express";
 import userRoutes from './routes/user.js'
+import authRoutes from './routes/authroutes.js'
 import mongoose from "mongoose";
+import 'dotenv/config'
+
 const app = express();
-const PORT = 4000;
 app.use(express.json()); //poori app pe laga he
 
 //connect to database
 
-mongoose.connect('mongodb+srv://bilal:bilal@cluster0.hw5owlh.mongodb.net/test').then(() => console.log("DB connected"))
+mongoose.connect(process.env.MONGODB_URI).then(() => console.log("DB connected"))
   .catch((err) => console.log(err))
 
 app.get("/", (req, res) => {
@@ -15,9 +17,10 @@ app.get("/", (req, res) => {
 });
 
 app.use('/user', userRoutes)
+app.use('/auth', authRoutes)
 
 
-app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
+app.listen(process.env.PORT, () => console.log(`Server is running on PORT ${process.env.PORT}`));
 
 
 //route=>request=>controllers=>service=>controller=>response

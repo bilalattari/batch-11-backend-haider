@@ -5,10 +5,10 @@ import taskRoutes from './routes/task.js'
 import mongoose from "mongoose";
 import 'dotenv/config'
 import authenticateUser from "./middlewares/authenticateUser.js";
-
+import cors from 'cors'
 const app = express();
 app.use(express.json()); //poori app pe laga he
-
+app.use(cors("*"))
 //connect to database
 
 mongoose.connect(process.env.MONGODB_URI).then(() => console.log("DB connected"))

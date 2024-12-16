@@ -1,8 +1,10 @@
 import express from "express";
 import userRoutes from './routes/user.js'
 import authRoutes from './routes/authroutes.js'
+import taskRoutes from './routes/task.js'
 import mongoose from "mongoose";
 import 'dotenv/config'
+import authenticateUser from "./middlewares/authenticateUser.js";
 
 const app = express();
 app.use(express.json()); //poori app pe laga he
@@ -18,6 +20,7 @@ app.get("/", (req, res) => {
 
 app.use('/user', userRoutes)
 app.use('/auth', authRoutes)
+app.use('/task', authenticateUser, taskRoutes)
 
 
 app.listen(process.env.PORT, () => console.log(`Server is running on PORT ${process.env.PORT}`));

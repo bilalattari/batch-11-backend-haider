@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router()
 import User from "../models/User.js";
+import authenticateUser from "../middlewares/authenticateUser.js";
 
 router.post('/', async (req, res) => {
     const { fullname, email } = req.body
@@ -23,6 +24,23 @@ router.get('/', async (req, res) => {
         error: false,
         data: users
     })
+})
+
+router.get('/myInfo', authenticateUser, async (req, res) => {
+    try {
+        res.status(200).json({
+            msg: 'User Found Successfully',
+            error: false,
+            data: req.user
+        })
+    }
+    catch (err) {
+        res.status(500).json({
+            error: true,
+            msg: "Something went wrong",
+            data: null
+        })
+    }
 })
 
 router.get('/:id', async (req, res) => {
